@@ -1,0 +1,31 @@
+---
+- name: Update Pi-hole and Gravity
+  hosts: pihole  # Define the group or host for Pi-hole
+  become: yes  # Ensure we have root privileges
+
+  tasks:
+    - name: Update package list
+      apt:
+        update_cache: yes
+
+    - name: Upgrade installed packages
+      apt:
+        upgrade: dist  # Perform a full upgrade
+
+    - name: Update Pi-hole using pihole command
+      command: pihole -up
+      register: pihole_update
+      changed_when: "'[✓] Pi-hole' in pihole_update.stdout"
+
+    - name: Update gravity database
+      command: pihole -g
+      register: gravity_update
+      changed_when: "'[✓] Update Gravity' in gravity_update.stdout"
+
+    - name: Notify about Pi-hole update status
+      debug:
+        msg: "Pi-hole update status: {{ pihole_update.stdout }}"
+
+    - name: Notify about Gravity update status
+      debug:
+        msg: "Gravity update status: {{ gravity_update.stdout }}"
