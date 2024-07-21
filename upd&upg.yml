@@ -1,7 +1,8 @@
----
 - name: Update and upgrade Ubuntu servers
   hosts: all
   become: yes
+  vars_files:
+    - vars.yml
   tasks:
     - name: Update apt cache
       apt:
