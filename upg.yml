@@ -1,32 +1,26 @@
----
 - name: Upgrade and Reboot
   hosts: all
   become: yes
-  tasks:
+  become_method: sudo
 
+  tasks:
     - name: Update System Package Cache
       apt:
         update_cache: yes
-        cache_valid_time: 3600  # Cache validity time in seconds
 
     - name: Upgrade System Packages
       apt:
-        upgrade: full-upgrade
-        autoclean: yes
-        autoremove: yes
+        upgrade: full
 
-    - name: Reboot the server if necessary
+    - name: Reboot the system if needed
       reboot:
         reboot_timeout: 600
-      when: ansible_facts.packages['apt'][0].version is version('1.0', '<')
+      register: reboot_result
+      ignore_errors: yes
 
     - name: Wait for the server to come back online
       wait_for:
         port: 22
-        host: "{{ ansible_host }}"
-        delay: 60
+        delay: 15
         timeout: 300
-        state: started
-      delegate_to: localhost
-      when: ansible_facts.packages['apt'][0].version is version('1.0', '<')
-
+      when: reboot_result is defined and reboot_result.changed
