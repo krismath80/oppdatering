@@ -1,7 +1,7 @@
 ---
 - name: Update Docker Compose app on homepage
   hosts: homepage
-  become: yes
+  become: yes  # Ensure that the playbook runs with elevated privileges
 
   tasks:
     - name: Ensure Docker is installed
@@ -17,19 +17,19 @@
         update_cache: yes
 
     - name: Stop running Docker Compose containers
-      command: docker-compose stop
+      command: sudo docker-compose stop
       args:
         chdir: /home/krismath/homepage
 
     - name: Pull the latest images for the Docker Compose project
-      command: docker-compose pull
+      command: sudo docker-compose pull
       args:
         chdir: /home/krismath/homepage
 
     - name: Start the Docker Compose containers
-      command: docker-compose up -d
+      command: sudo docker-compose up -d
       args:
         chdir: /home/krismath/homepage
 
     - name: Clean up unused Docker images
-      command: docker image prune -f
+      command: sudo docker image prune -f
