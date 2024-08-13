@@ -1,6 +1,6 @@
 ---
-- name: Update Docker containers
-  hosts: servers  # Use the 'servers' group from your hosts file
+- name: Update Docker Compose app on homepage
+  hosts: homepage
   become: yes
 
   tasks:
@@ -19,17 +19,17 @@
     - name: Stop running Docker Compose containers
       command: docker-compose stop
       args:
-        chdir: /path/to/your/docker-compose-directory
+        chdir: /home/krismath/homepage
 
     - name: Pull the latest images for the Docker Compose project
       command: docker-compose pull
       args:
-        chdir: /path/to/your/docker-compose-directory
+        chdir: /home/krismath/homepage
 
     - name: Start the Docker Compose containers
       command: docker-compose up -d
       args:
-        chdir: /path/to/your/docker-compose-directory
+        chdir: /home/krismath/homepage
 
     - name: Clean up unused Docker images
       command: docker image prune -f
