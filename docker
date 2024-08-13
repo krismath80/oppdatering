@@ -1,0 +1,35 @@
+---
+- name: Update Docker Compose containers on Ubuntu
+  hosts: your_host_group
+  become: yes
+
+  tasks:
+    - name: Ensure Docker is installed
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker Compose is installed
+      apt:
+        name: docker-compose
+        state: present
+        update_cache: yes
+
+    - name: Stop running Docker Compose containers
+      command: docker-compose stop
+      args:
+        chdir: /path/to/your/docker-compose-directory
+
+    - name: Pull the latest images for the Docker Compose project
+      command: docker-compose pull
+      args:
+        chdir: /path/to/your/docker-compose-directory
+
+    - name: Start the Docker Compose containers
+      command: docker-compose up -d
+      args:
+        chdir: /path/to/your/docker-compose-directory
+
+    - name: Clean up unused Docker images
+      command: docker image prune -f
