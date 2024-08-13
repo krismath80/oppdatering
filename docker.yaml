@@ -1,6 +1,6 @@
 ---
-- name: Update Docker Compose containers on Ubuntu
-  hosts: your_host_group
+- name: Update Docker containers
+  hosts: Docker  # Use the 'servers' group from your hosts file
   become: yes
 
   tasks:
