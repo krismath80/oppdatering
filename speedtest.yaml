@@ -1,0 +1,50 @@
+---
+- name: Update Docker Compose app for Speedtest
+  hosts: speedtest
+  become: yes  # Ensure that the playbook runs with elevated privileges
+
+  tasks:
+    - name: Ensure Docker Compose is installed
+      apt:
+        name: docker-compose
+        state: present
+        update_cache: yes
+
+    - name: Stop running Docker Compose containers
+      command: docker-compose stop
+      args:
+        chdir: /home/krismath/speedtest
+
+    - name: Pull the latest images for the Docker Compose project
+      command: docker-compose pull
+      args:
+        chdir: /home/krismath/speedtest
+
+    - name: Start the Docker Compose containers
+      command: docker-compose up -d
+      args:
+        chdir: /home/krismath/speedtest
+
+    - name: Clean up unused Docker images
+      command: docker image prune -f
+
+    - name: Verify Docker Compose containers are running
+      command: docker-compose ps
+      args:
+        chdir: /home/krismath/speedtest
+      register: container_status
+
+    - name: Display container status
+      debug:
+        msg: "{{ container_status.stdout_lines }}"
+
+    - name: List current Docker Compose images
+      command: docker-compose images
+      args:
+        chdir: /home/krismath/speedtest
+      register: image_status
+
+    - name: Display current Docker images
+      debug:
+        msg: "{{ image_status.stdout_lines }}"
+
