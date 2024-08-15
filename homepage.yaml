@@ -4,32 +4,26 @@
   become: yes  # Ensure that the playbook runs with elevated privileges
 
   tasks:
-    - name: Ensure Docker is installed
-      apt:
-        name: docker.io
-        state: present
-        update_cache: yes
-
     - name: Ensure Docker Compose is installed
       apt:
-        name: docker-compose
+        name: docker-compose-plugin
         state: present
         update_cache: yes
 
     - name: Stop running Docker Compose containers
-      command: sudo docker-compose stop
+      command: docker-compose stop
       args:
         chdir: /home/krismath/homepage
 
     - name: Pull the latest images for the Docker Compose project
-      command: sudo docker-compose pull
+      command: docker-compose pull
       args:
         chdir: /home/krismath/homepage
 
     - name: Start the Docker Compose containers
-      command: sudo docker-compose up -d
+      command: docker-compose up -d
       args:
         chdir: /home/krismath/homepage
 
     - name: Clean up unused Docker images
-      command: sudo docker image prune -f
+      command: docker image prune -f
