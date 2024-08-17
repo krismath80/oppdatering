@@ -1,0 +1,32 @@
+---
+- name: Manage Minecraft Server
+  hosts: all
+  become: true  # Run all tasks with sudo
+  tasks:
+
+    - name: Stop Minecraft server
+      ansible.builtin.systemd:
+        name: minecraft
+        state: stopped
+
+    - name: Sletter gammel server
+      ansible.builtin.file:
+        path: /home/mcserver/minecraft/Audunsworld
+        state: absent
+        recurse: true
+
+    - name: Starter ny Minecraft server
+      ansible.builtin.systemd:
+        name: minecraft
+        state: started
+
+    - name: Venter på at server skal starte
+      ansible.builtin.systemd:
+        name: minecraft
+        state: active
+        enabled: yes
+      register: result
+
+    - name: Server status
+      ansible.builtin.debug:
+        msg: "Minecraft server status: {{ result.status }}"
