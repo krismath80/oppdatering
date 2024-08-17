@@ -29,13 +29,12 @@
         name: minecraftserver.service
         state: started
 
-    - name: Wait for Minecraft service to be active
+    - name: Wait for Minecraft service to be started
       ansible.builtin.systemd:
         name: minecraftserver.service
-        state: active
-        enabled: yes
+        state: started
       register: result
 
     - name: Print Minecraft server status
       ansible.builtin.debug:
-        msg: "Minecraft server status: {{ result.status }}"
+        msg: "Minecraft server status: {{ result }}"
