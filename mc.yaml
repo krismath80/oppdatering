@@ -1,36 +1,34 @@
 ---
 - name: Manage Minecraft Server
-  hosts: all
-  become: true  # Run all tasks with sudo
+  hosts: minecraft
+  become: yes
+
   tasks:
+    - name: Gather facts
+      setup:
 
     - name: Stop Minecraft server
-      ansible.builtin.systemd:
+      systemd:
         name: minecraftserver.service
         state: stopped
 
     - name: Ensure the main Minecraft world directory is absent
-      ansible.builtin.file:
+      file:
         path: /home/mcserver/minecraft/Audunsworld
         state: absent
 
     - name: Ensure the Nether world directory is absent
-      ansible.builtin.file:
-        path: /home/mcserver/minecraft/Audunsworld_nether
+      file:
+        path: /home/mcserver/minecraft/Nether
         state: absent
 
     - name: Ensure the End world directory is absent
-      ansible.builtin.file:
-        path: /home/mcserver/minecraft/Audunsworld_the_end
-        state: absent
-
-    - name: Remove banned-players.json
-      ansible.builtin.file:
-        path: /home/mcserver/minecraft/banned-players.json
+      file:
+        path: /home/mcserver/minecraft/The_End
         state: absent
 
     - name: Start Minecraft server
-      ansible.builtin.systemd:
+      systemd:
         name: minecraftserver.service
         state: started
 
@@ -38,13 +36,12 @@
       pause:
         seconds: 5
 
-    - name: Wait for Minecraft service to be started
-      ansible.builtin.systemd:
+    - name: Print Minecraft server status
+      systemd:
         name: minecraftserver.service
         state: started
-      register: result
+      register: minecraft_status
 
     - name: Print Minecraft server status
-      ansible.builtin.debug:
-        msg: "Minecraft server status: {{ result }}"
-
+      debug:
+        msg: "{{ minecraft_status }}"
