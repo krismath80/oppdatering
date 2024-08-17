@@ -28,7 +28,11 @@
       ansible.builtin.systemd:
         name: minecraftserver.service
         state: started
-
+    
+    - name: Pause for 5 seconds to ensure Minecraft service is fully started
+      pause:
+        seconds: 5
+        
     - name: Wait for Minecraft service to be started
       ansible.builtin.systemd:
         name: minecraftserver.service
