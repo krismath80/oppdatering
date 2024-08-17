@@ -28,4 +28,29 @@
         state: stopped
       become: true
 
-    - name:
+    - name: Remove banned-players.json
+      ansible.builtin.file:
+        path: /home/mcserver/minecraft/banned-players.json
+        state: absent
+      become: true
+
+    - name: Start Minecraft server
+      ansible.builtin.systemd:
+        name: minecraftserver.service
+        state: started
+      become: true
+
+    - name: Pause for 5 seconds to ensure Minecraft service is fully started
+      pause:
+        seconds: 5
+
+    - name: Wait for Minecraft service to be started
+      ansible.builtin.systemd:
+        name: minecraftserver.service
+        state: started
+      register: result
+      become: true
+
+    - name: Print Minecraft server status
+      ansible.builtin.debug:
+        msg: "Minecraft server status: {{ result }}"
