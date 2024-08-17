@@ -9,23 +9,20 @@
         name: minecraftserver.service
         state: stopped
 
-    - name: Remove the main Minecraft world directory
+    - name: Ensure the main Minecraft world directory is absent
       ansible.builtin.file:
         path: /home/mcserver/minecraft/Audunsworld
         state: absent
-        recurse: true
 
-    - name: Remove the Nether world directory
+    - name: Ensure the Nether world directory is absent
       ansible.builtin.file:
         path: /home/mcserver/minecraft/Audunsworld_nether
         state: absent
-        recurse: true
 
-    - name: Remove the End world directory
+    - name: Ensure the End world directory is absent
       ansible.builtin.file:
         path: /home/mcserver/minecraft/Audunsworld_the_end
         state: absent
-        recurse: true
 
     - name: Start Minecraft server
       ansible.builtin.systemd:
