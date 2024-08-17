@@ -1,5 +1,5 @@
 ---
-- name: New season
+- name: Manage Minecraft Server
   hosts: all
   become: true  # Run all tasks with sudo
   tasks:
