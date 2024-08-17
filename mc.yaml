@@ -1,32 +1,44 @@
 ---
-- name: Manage Minecraft Server
+- name: New season
   hosts: all
   become: true  # Run all tasks with sudo
   tasks:
 
     - name: Stop Minecraft server
       ansible.builtin.systemd:
-        name: minecraft
+        name: minecraftserver.service
         state: stopped
 
-    - name: Sletter gammel server
+    - name: Remove the main Minecraft world directory
       ansible.builtin.file:
         path: /home/mcserver/minecraft/Audunsworld
         state: absent
         recurse: true
 
-    - name: Starter ny Minecraft server
+    - name: Remove the Nether world directory
+      ansible.builtin.file:
+        path: /home/mcserver/minecraft/Audunsworld_nether
+        state: absent
+        recurse: true
+
+    - name: Remove the End world directory
+      ansible.builtin.file:
+        path: /home/mcserver/minecraft/Audunsworld_the_end
+        state: absent
+        recurse: true
+
+    - name: Start Minecraft server
       ansible.builtin.systemd:
-        name: minecraft
+        name: minecraftserver.service
         state: started
 
-    - name: Venter på at server skal starte
+    - name: Wait for Minecraft service to be active
       ansible.builtin.systemd:
-        name: minecraft
+        name: minecraftserver.service
         state: active
         enabled: yes
       register: result
 
-    - name: Server status
+    - name: Print Minecraft server status
       ansible.builtin.debug:
         msg: "Minecraft server status: {{ result.status }}"
