@@ -5,40 +5,32 @@
   tasks:
 
     - name: Send in-game warning message about impending restart
-      ansible.builtin.shell:
-        cmd: "screen -S minecraft -p 0 -X stuff 'say Server omstart om 10 sekunder for å oppheve bannlysning av spillere!^M'"
-        chdir: /home/mcserver/minecraft
-      become: true
-      become_user: mcserver
+      ansible.builtin.shell: |
+        sudo -u mcserver screen -S minecraft -p 0 -X stuff 'say Server omstart om 10 sekunder for å oppheve bannlysning av spillere!^M'
+      chdir: /home/mcserver/minecraft
 
     - name: Countdown before restart
-      ansible.builtin.shell:
-        cmd: |
-          for i in {10..1}; do
-            screen -S minecraft -p 0 -X stuff "say Omstart om $i sekunder!^M"
-            sleep 1
-          done
-        chdir: /home/mcserver/minecraft
-      become: true
-      become_user: mcserver
+      ansible.builtin.shell: |
+        for i in {10..1}; do
+          sudo -u mcserver screen -S minecraft -p 0 -X stuff "say Omstart om $i sekunder!^M"
+          sleep 1
+        done
+      chdir: /home/mcserver/minecraft
 
     - name: Stop Minecraft server
       ansible.builtin.systemd:
         name: minecraftserver.service
         state: stopped
-      become: true
 
     - name: Remove banned-players.json
       ansible.builtin.file:
         path: /home/mcserver/minecraft/banned-players.json
         state: absent
-      become: true
 
     - name: Start Minecraft server
       ansible.builtin.systemd:
         name: minecraftserver.service
         state: started
-      become: true
 
     - name: Pause for 5 seconds to ensure Minecraft service is fully started
       pause:
@@ -49,7 +41,6 @@
         name: minecraftserver.service
         state: started
       register: result
-      become: true
 
     - name: Print Minecraft server status
       ansible.builtin.debug:
