@@ -4,24 +4,6 @@
   become: true  # Run all tasks with sudo
   tasks:
 
-    - name: Send in-game warning message about new season
-      ansible.builtin.shell:
-        cmd: "screen -S minecraft -p 0 -X stuff 'say Starting new season in 30 seconds!^M'"
-        chdir: /home/mcserver/minecraft
-
-    - name: Pause for 5 seconds to allow the warning message to be seen
-      pause:
-        seconds: 5
-
-    - name: Send in-game countdown messages
-      ansible.builtin.shell:
-        cmd: |
-          for i in {30..1}; do
-            screen -S minecraft -p 0 -X stuff "say Restarting in $i seconds!^M"
-            sleep 1
-          done
-        chdir: /home/mcserver/minecraft
-
     - name: Stop Minecraft server
       ansible.builtin.systemd:
         name: minecraftserver.service
