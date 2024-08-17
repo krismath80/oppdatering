@@ -7,7 +7,6 @@
     - name: Send in-game warning message about impending restart
       ansible.builtin.shell: |
         sudo -u mcserver screen -S minecraft -p 0 -X stuff 'say Server omstart om 10 sekunder for å oppheve bannlysning av spillere!^M'
-      chdir: /home/mcserver/minecraft
 
     - name: Countdown before restart
       ansible.builtin.shell: |
@@ -15,7 +14,6 @@
           sudo -u mcserver screen -S minecraft -p 0 -X stuff "say Omstart om $i sekunder!^M"
           sleep 1
         done
-      chdir: /home/mcserver/minecraft
 
     - name: Stop Minecraft server
       ansible.builtin.systemd:
