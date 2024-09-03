@@ -19,12 +19,12 @@
 
     - name: Ensure the Nether world directory is absent
       file:
-        path: /home/mcserver/minecraft/Nether
+        path: /home/mcserver/minecraft/Audunsworld_nether
         state: absent
 
     - name: Ensure the End world directory is absent
       file:
-        path: /home/mcserver/minecraft/The_End
+        path: /home/mcserver/minecraft/Audunsworld_the_end
         state: absent
     
     - name: Remove banned-players.json
