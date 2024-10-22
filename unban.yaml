@@ -2,11 +2,10 @@
 - name: Restart Minecraft Server to Unban Players
   hosts: all
   become: true  # Run all tasks with sudo
-   vars:
+  vars:
     ansible_python_interpreter: /usr/bin/python3.12
     
   tasks:
-
     - name: Stop Minecraft server
       ansible.builtin.systemd:
         name: minecraftserver.service
