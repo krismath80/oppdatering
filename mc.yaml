@@ -2,7 +2,7 @@
 - name: Manage Minecraft Server
   hosts: minecraft
   become: yes
- vars:
+  vars:
     ansible_python_interpreter: /usr/bin/python3.12
     
   tasks:
