@@ -18,11 +18,6 @@
       pause:
         seconds: 10
 
-    - name: Stop any existing Java processes (cleanup in case of hanging processes)
-      shell: |
-        pkill -f 'java.*minecraft'
-      ignore_errors: yes
-
     - name: Reload systemd to ensure updated configuration
       command: systemctl daemon-reload
 
