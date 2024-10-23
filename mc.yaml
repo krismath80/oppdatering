@@ -14,6 +14,18 @@
         name: minecraft.service
         state: stopped
 
+    - name: Wait for 10 seconds to ensure the service has fully stopped
+      pause:
+        seconds: 10
+
+    - name: Stop any existing Java processes (cleanup in case of hanging processes)
+      shell: |
+        pkill -f 'java.*minecraft'
+      ignore_errors: yes
+
+    - name: Reload systemd to ensure updated configuration
+      command: systemctl daemon-reload
+
     - name: Ensure the main Minecraft world directory is absent
       file:
         path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world
@@ -34,3 +46,19 @@
         path: /home/mcserver/minecraft/forge_server_1.16.5/banned-players.json
         state: absent
 
+    - name: Start Minecraft server
+      systemd:
+        name: minecraft.service
+        state: started
+
+    - name: Pause for 10 seconds to ensure Minecraft service is fully started
+      pause:
+        seconds: 10
+
+    - name: Get Minecraft server status
+      command: systemctl status minecraft.service
+      register: minecraft_status
+
+    - name: Print Minecraft server status
+      debug:
+        msg: "{{ minecraft_status.stdout }}"
