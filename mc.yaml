@@ -16,22 +16,22 @@
 
     - name: Ensure the main Minecraft world directory is absent
       file:
-        path: /home/mcserver/minecraft/Audunsworld
+        path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world
         state: absent
 
     - name: Ensure the Nether world directory is absent
       file:
-        path: /home/mcserver/minecraft/Audunsworld_nether
+        path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world_nether
         state: absent
 
     - name: Ensure the End world directory is absent
       file:
-        path: /home/mcserver/minecraft/Audunsworld_the_end
+        path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world_the_end
         state: absent
     
     - name: Remove banned-players.json
       ansible.builtin.file:
-        path: /home/mcserver/minecraft/banned-players.json
+        path: /home/mcserver/minecraft/forge_server_1.16.5/banned-players.json
         state: absent
 
     - name: Start Minecraft server
@@ -43,12 +43,11 @@
       pause:
         seconds: 5
 
-    - name: Print Minecraft server status
-      systemd:
-        name: minecraftserver.service
-        state: started
+    - name: Get Minecraft server status
+      command: systemctl status minecraftserver.service
       register: minecraft_status
 
     - name: Print Minecraft server status
       debug:
-        msg: "{{ minecraft_status }}"
+        msg: "{{ minecraft_status.stdout }}"
+
