@@ -11,7 +11,7 @@
 
     - name: Stop Minecraft server
       systemd:
-        name: minecraftserver.service
+        name: minecraft.service
         state: stopped
 
     - name: Ensure the main Minecraft world directory is absent
@@ -33,21 +33,4 @@
       ansible.builtin.file:
         path: /home/mcserver/minecraft/forge_server_1.16.5/banned-players.json
         state: absent
-
-    - name: Start Minecraft server
-      systemd:
-        name: minecraftserver.service
-        state: started
-
-    - name: Pause for 5 seconds to ensure Minecraft service is fully started
-      pause:
-        seconds: 5
-
-    - name: Get Minecraft server status
-      command: systemctl status minecraftserver.service
-      register: minecraft_status
-
-    - name: Print Minecraft server status
-      debug:
-        msg: "{{ minecraft_status.stdout }}"
 
