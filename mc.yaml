@@ -40,19 +40,16 @@
         path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world_the_end
         state: absent
       when: force_reset_world
-    
+
     - name: Remove banned-players.json
       ansible.builtin.file:
         path: /home/mcserver/minecraft/forge_server_1.16.5/banned-players.json
         state: absent
 
-    - name: Start Minecraft server with sudo privilege escalation
+    - name: Start Minecraft server as root
       ansible.builtin.systemd:
         name: minecraft.service
         state: started
-      become: yes
-      become_user: mcserver
-      become_method: sudo
 
     - name: Pause for 30 seconds to ensure Minecraft service is fully started
       ansible.builtin.pause:
