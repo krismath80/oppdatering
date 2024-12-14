@@ -1,0 +1,86 @@
+---
+- name: Setup and Manage Minecraft Paper Server
+  hosts: minecraft
+  become: yes
+  tasks:
+    - name: Install Java
+      apt:
+        name: openjdk-21-jre-headless
+        state: present
+        update_cache: yes
+
+    - name: Ensure working directory exists
+      file:
+        path: /home/mcserver/minecraft
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Download PaperMC jar
+      get_url:
+        url: https://api.papermc.io/v2/projects/paper/versions/1.21.3/builds/latest/downloads/paper-1.21.3.jar
+        dest: /home/mcserver/minecraft/paper.jar
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create systemd service file for Minecraft
+      copy:
+        dest: /etc/systemd/system/minecraft.service
+        content: |
+          [Unit]
+          Description=Minecraft Server
+          After=network.target
+
+          [Service]
+          User=root
+          WorkingDirectory=/home/mcserver/minecraft
+          ExecStart=/usr/bin/java -Xms48G -Xmx48G -jar /home/mcserver/minecraft/paper.jar nogui
+          Restart=always
+          RestartSec=10
+          TimeoutStartSec=300
+          Type=simple
+
+          [Install]
+          WantedBy=multi-user.target
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Stop old Minecraft service (if exists)
+      shell: |
+        systemctl stop minecraftserver.service || true
+        systemctl disable minecraftserver.service || true
+        rm -f /etc/systemd/system/minecraftserver.service
+      args:
+        warn: false
+
+    - name: Reload systemd daemon
+      command: systemctl daemon-reload
+
+    - name: Start Minecraft service
+      systemd:
+        name: minecraft.service
+        state: started
+        enabled: yes
+
+    - name: Check Minecraft service status
+      command: systemctl status minecraft.service
+      register: service_status
+      failed_when: "'active (running)' not in service_status.stdout"
+
+    - name: Install ProtocolLib (optional for SuperVanish)
+      get_url:
+        url: https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/target/ProtocolLib.jar
+        dest: /home/mcserver/minecraft/plugins/ProtocolLib.jar
+        owner: root
+        group: root
+        mode: '0644'
+      when: install_protocollib | default(true)
+
+    - name: Restart Minecraft service to load ProtocolLib
+      systemd:
+        name: minecraft.service
+        state: restarted
+      when: install_protocollib | default(true)
