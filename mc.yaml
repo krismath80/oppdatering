@@ -1,0 +1,44 @@
+---
+- name: Manage Minecraft Server
+  hosts: all
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3.12
+    force_reset_world: false
+
+  tasks:
+    - name: Gather facts
+      setup:
+
+    - name: Stop Minecraft server
+      systemd:
+        name: minecraft.service
+        state: stopped
+
+    - name: Wait for 10 seconds to ensure the service has fully stopped
+      pause:
+        seconds: 10
+
+    - name: Reload systemd to ensure updated configuration
+      command: systemctl daemon-reload
+
+    - name: Ensure the main Minecraft world directory is absent
+      file:
+        path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world
+        state: absent
+      when: force_reset_world
+
+    - name: Ensure the Nether world directory is absent
+      file:
+        path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world_nether
+        state: absent
+      when: force_reset_world
+
+    - name: Ensure the End world directory is absent
+      file:
+        path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world_the_end
+        state: absent
+      when: force_reset_world
+    
+    - name: Remove banned-players.json
+      ansible.builtin.file
