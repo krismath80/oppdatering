@@ -1,6 +1,6 @@
 ---
 - name: Update Pi-hole and Gravity
-  hosts: pihole  # Define the group or host for Pi-hole
+  #hosts: pihole  # Define the group or host for Pi-hole
   become: yes  # Ensure we have root privileges
   vars:
     ansible_python_interpreter: /usr/bin/python3.12
