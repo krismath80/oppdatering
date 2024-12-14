@@ -50,6 +50,7 @@
       ansible.builtin.systemd:
         name: minecraft.service
         state: started
+      become_user: mcserver
 
     - name: Pause for 30 seconds to ensure Minecraft service is fully started
       ansible.builtin.pause:
@@ -59,7 +60,9 @@
       ansible.builtin.command:
         cmd: systemctl is-active minecraft.service
       register: service_status
-      failed_when: service_status.stdout != "active"
+      retries: 5
+      delay: 10
+      until: service_status.stdout == "active"
 
     - name: Print Minecraft server status
       ansible.builtin.command:
