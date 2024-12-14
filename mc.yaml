@@ -4,41 +4,68 @@
   become: yes
   vars:
     ansible_python_interpreter: /usr/bin/python3.12
-    force_reset_world: false
+    force_reset_world: false  # Set to true if you want to reset world directories
 
   tasks:
     - name: Gather facts
-      setup:
+      ansible.builtin.setup:
 
     - name: Stop Minecraft server
-      systemd:
+      ansible.builtin.systemd:
         name: minecraft.service
         state: stopped
 
     - name: Wait for 10 seconds to ensure the service has fully stopped
-      pause:
+      ansible.builtin.pause:
         seconds: 10
 
     - name: Reload systemd to ensure updated configuration
-      command: systemctl daemon-reload
+      ansible.builtin.command:
+        cmd: systemctl daemon-reload
 
     - name: Ensure the main Minecraft world directory is absent
-      file:
+      ansible.builtin.file:
         path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world
         state: absent
       when: force_reset_world
 
     - name: Ensure the Nether world directory is absent
-      file:
+      ansible.builtin.file:
         path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world_nether
         state: absent
       when: force_reset_world
 
     - name: Ensure the End world directory is absent
-      file:
+      ansible.builtin.file:
         path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world_the_end
         state: absent
       when: force_reset_world
     
     - name: Remove banned-players.json
-      ansible.builtin.file
+      ansible.builtin.file:
+        path: /home/mcserver/minecraft/forge_server_1.16.5/banned-players.json
+        state: absent
+
+    - name: Start Minecraft server
+      ansible.builtin.systemd:
+        name: minecraft.service
+        state: started
+
+    - name: Pause for 30 seconds to ensure Minecraft service is fully started
+      ansible.builtin.pause:
+        seconds: 30
+
+    - name: Verify Minecraft service is active
+      ansible.builtin.command:
+        cmd: systemctl is-active minecraft.service
+      register: service_status
+      failed_when: service_status.stdout != "active"
+
+    - name: Print Minecraft server status
+      ansible.builtin.command:
+        cmd: systemctl status minecraft.service
+      register: minecraft_status
+
+    - name: Debug Minecraft server status
+      ansible.builtin.debug:
+        msg: "{{ minecraft_status.stdout }}"
