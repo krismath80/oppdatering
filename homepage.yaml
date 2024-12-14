@@ -1,6 +1,6 @@
 ---
 - name: Update Docker Compose app on homepage
-  hosts: 10.0.0.5
+  hosts: all
   become: yes  # Ensure that the playbook runs with elevated privileges
   vars:
     ansible_python_interpreter: /usr/bin/python3.12
