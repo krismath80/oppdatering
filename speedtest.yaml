@@ -1,6 +1,6 @@
 ---
 - name: Update Docker Compose app for Speedtest
-  hosts: speedtest
+  hosts: all
   become: yes  # Ensure that the playbook runs with elevated privileges
   vars:
     ansible_python_interpreter: /usr/bin/python3.12
