@@ -25,19 +25,19 @@
 
     - name: Ensure the main Minecraft world directory is absent
       ansible.builtin.file:
-        path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world
+        path: /home/mcserver/minecraft/Auduns_world
         state: absent
       when: force_reset_world
 
     - name: Ensure the Nether world directory is absent
       ansible.builtin.file:
-        path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world_nether
+        path: /home/mcserver/minecraft/Auduns_world_nether
         state: absent
       when: force_reset_world
 
     - name: Ensure the End world directory is absent
       ansible.builtin.file:
-        path: /home/mcserver/minecraft/forge_server_1.16.5/Auduns_world_the_end
+        path: /home/mcserver/minecraft/Auduns_world_the_end
         state: absent
       when: force_reset_world
 
