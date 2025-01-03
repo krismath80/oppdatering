@@ -4,7 +4,7 @@
   become: yes
   vars:
     ansible_python_interpreter: /usr/bin/python3.12
-    force_reset_world: false  # Set to true if you want to reset world directories
+    force_reset_world: true  # Set to true if you want to reset world directories
 
   tasks:
     - name: Gather facts
