@@ -43,7 +43,7 @@
 
     - name: Remove banned-players.json
       ansible.builtin.file:
-        path: /home/mcserver/minecraft/forge_server_1.16.5/banned-players.json
+        path: /home/mcserver/minecraft/banned-players.json
         state: absent
 
     - name: Start Minecraft server as root
