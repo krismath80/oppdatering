@@ -25,25 +25,25 @@
 
     - name: Ensure the main Minecraft world directory is absent
       ansible.builtin.file:
-        path: /home/mcserver/minecraft/Audunsworld
+        path: /home/mcserver/MJAAAAAAAAAAU
         state: absent
       when: force_reset_world
 
     - name: Ensure the Nether world directory is absent
       ansible.builtin.file:
-        path: /home/mcserver/minecraft/Audunsworld_nether
+        path: /home/mcserver/MJAAAAAAAAAAU_nether
         state: absent
       when: force_reset_world
 
     - name: Ensure the End world directory is absent
       ansible.builtin.file:
-        path: /home/mcserver/minecraft/Audunsworld_the_end
+        path: /home/mcserver/MJAAAAAAAAAAU_the_end
         state: absent
       when: force_reset_world
 
     - name: Remove banned-players.json
       ansible.builtin.file:
-        path: /home/mcserver/minecraft/banned-players.json
+        path: /home/mcserver/banned-players.json
         state: absent
 
     - name: Start Minecraft server as root
